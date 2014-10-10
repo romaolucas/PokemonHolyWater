@@ -34,7 +34,8 @@ class Type(Enum):
 		     [1.0, 1.0, 2.0, 1.0, 2.0, 1.0, 0.0, 1.0, 1.0, 0.5, 0.5, 2.0, 1.0, 1.0, 0.5, 2.0, 1.0],
 		     [1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0]]
 
-def getMultiplier(atkType, atkPokeType1, atkPokeType2, defType1, defType2):#trocar parametros para Pokemons depois ??
+def getMultiplier(atkType, atkPokeType1, atkPokeType2, defType1, defType2):
+    #trocar parametros para Pokemons depois ??
 	ans = 1.0
 	if (atkType is atkPokeType1) or (atkType is atkPokeType2):
 		ans = ans * 1.5 #aplicar STAB
