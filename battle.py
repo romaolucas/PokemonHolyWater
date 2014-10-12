@@ -4,7 +4,6 @@ from pokemon import *
 argv = sys.argv
 first = Pokemon(argv[1])
 second = Pokemon(argv[2])
-print(first is second)
 
 def allAlive():
 	if first.hp <= 0 and second.hp <= 0:
@@ -20,7 +19,6 @@ def allAlive():
 
 def main(argv=None):
 	active = first
-	print(first.atks is second.atks)
 	while(allAlive()):
 		print('vez do ' + active.name)
 		for i in range(0, 4):

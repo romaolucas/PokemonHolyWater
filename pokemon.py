@@ -1,19 +1,9 @@
 #to ligado que se pa esses import tem alguns redundantes (se pa, n manjo)
+import copy
 from type import Type
 from attack import *
 
 class Pokemon:
-	name = None
-	level = None
-	typ1 = None
-	typ2 = None
-	hp = None
-	maxhp = None
-	atk = None
-	dfs = None
-	spd = None
-	spc = None
-	atks = [None] * 4
 
 	def __init__(self, x): 		#read pokefile
 		pokefile = open(x + ".poke")
@@ -29,6 +19,7 @@ class Pokemon:
 		self.dfs = int(stats[6])
 		self.spd = int(stats[7])
 		self.spc = int(stats[8])
+		self.atks = [None] * 4
 		for i in range(0,4):
 			atk = pokefile.readline().split(',')
 			if (atk is 'None' or atk is 'Blank'):
