@@ -1,0 +1,7 @@
+nomePoke, level, type1, type2, hp, atk, dfs, spd, spc ----- nomeAtk, atkType, accu, power, pp
+Hypno, 25, 13, 16, 180, 64, 84, 102, 85
+Confusion, 13, 30, 505, 15
+Future is Now Sight, 13, 100, 85, 25
+None
+Psychic, 13, 50, 220, 1
+

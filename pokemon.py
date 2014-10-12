@@ -22,7 +22,7 @@ class Pokemon:
 		self.atks = [None] * 4
 		for i in range(0,4):
 			atk = pokefile.readline().split(',')
-			if (atk is 'None' or atk is 'Blank'):
+			if (len(atk) != 5):
 				continue
 			self.atks[i] = Attack(atk[0], Type(int(atk[1])), int(atk[2]), int(atk[3]), int(atk[4]))
 		pokefile.close()
@@ -34,6 +34,16 @@ class Pokemon:
 		print('DEF: ' + str(self.dfs))
 		print('SPD: ' + str(self.spd))
 		print('SPC: ' + str(self.spc))
+
+	def hasToStruggle(self):#checar se vai usar struggle ou não
+		struggle = 4
+		for atk in self.atks:
+			if (atk is None or atk.pp <= 0):
+				struggle -= 1
+		if (struggle == 0):
+			return True
+		return False
+		
 
 	
 	

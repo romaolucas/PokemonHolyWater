@@ -1,0 +1,7 @@
+nomePoke, level, type1, type2, hp, atk, dfs, spd, spc ----- nomeAtk, atkType, accu, power, pp
+Hitmonlee, 22, 1, 16, 210, 44, 84, 44, 75
+Rasteira, 1, 100, 65, 15
+Voadora, 1, 100, 45, 25
+Doublekick, 1, 100, 50, 20
+Roundhouse Kick, 1, 50, 320, 1
+
