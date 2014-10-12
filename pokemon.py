@@ -6,18 +6,43 @@ class Pokemon:
 	name = None
 	level = None
 	typ1 = None
-        typ2 = None
+	typ2 = None
 	hp = None
+	maxhp = None
 	atk = None
 	dfs = None
 	spd = None
 	spc = None
-	atk1 = None
-	atk2 = None
-	atk3 = None
-	atk4 = None	
+	atks = [None] * 4
 
-	def __init__(self, pokefile):
-		#read pokefile ???
+	def __init__(self, x): 		#read pokefile
+		pokefile = open(x + ".poke")
+		pokefile.readline() #primeira linha reservada pra comentários
+		stats = pokefile.readline().split(',')
+		self.name = stats[0]
+		self.level = int(stats[1])
+		self.typ1 = Type(int(stats[2]))
+		self.typ2 = Type(int(stats[3]))
+		self.hp = int(stats[4])
+		self.maxhp = self.hp
+		self.atk = int(stats[5])
+		self.dfs = int(stats[6])
+		self.spd = int(stats[7])
+		self.spc = int(stats[8])
+		for i in range(0,4):
+			atk = pokefile.readline().split(',')
+			if (atk is 'None' or atk is 'Blank'):
+				continue
+			self.atks[i] = Attack(atk[0], Type(int(atk[1])), int(atk[2]), int(atk[3]), int(atk[4]))
+		pokefile.close()
 
+	def showStats(self):
+		print('Name: ' + self.name + ' Lv' + str(self.level))
+		print('HP: ' + str(self.hp) + '/' + str(self.maxhp))
+		print('ATK: ' + str(self.atk))
+		print('DEF: ' + str(self.dfs))
+		print('SPD: ' + str(self.spd))
+		print('SPC: ' + str(self.spc))
+
+	
 	
