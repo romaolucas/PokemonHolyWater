@@ -3,12 +3,8 @@ import random
 from pokemon import *
 from type import *
 
-#input dos pokemons participantes
-argv = sys.argv
-first = Pokemon(argv[1])
-second = Pokemon(argv[2])
 
-def allAlive(): #checa condição para o laço de batalha continuar
+def allAlive(first, second): #checa condição para o laço de batalha continuar
 	if first.hp <= 0 or second.hp <= 0:
 		return False
 	else:
@@ -28,7 +24,7 @@ def getFirst(poke1, poke2):
 			return poke2
 
 def effectMessage(mult): #printa message de acordo com efetividade do atk
-	if mult <= 0.5 and mult > 0:
+	if mult <= 0.75 and mult > 0:
 		return ' e foi pouco efetivo.'
 	elif mult >= 2.0:
 		return ' e foi super efetivo!'
@@ -62,7 +58,7 @@ def getCrit(speed):
 def getDmg(active, defender, atk, typeMult, crit): #devolve o dano de um atk
 	luck = getLuck()
 	#checar tipo do atk
-	if (atk.typ is Type.normal):
+	if (not atk.special):
 		offensiveStat = active.atk
 		defensiveStat = defender.dfs
 	else:
@@ -72,15 +68,8 @@ def getDmg(active, defender, atk, typeMult, crit): #devolve o dano de um atk
 	baseDmg = ((((2*active.level) + 10)/250)*(offensiveStat/defensiveStat)*(atk.pwr)) + 2
 	return crit*baseDmg*typeMult*luck
 
-def showAtks(poke): #printa os ataques do pokemon da vez para escolha do player
-	for i in range(0, 4):
-		if (poke.atks[i] is None):
-			print(str(i+1) + '-Empty Slot')
-			continue
-		print(str(i+1) + '-' + poke.atks[i].name + ' - PWR: ' + str(poke.atks[i].pwr) 
-+ ' - PP: ' + str(poke.atks[i].pp) + ' - ACC: ' + str(poke.atks[i].accu))
 
-def main(argv=None):
+def startBattle(first, second):
 	#determinando quem começa
 	active = getFirst(first, second)
 	if (active is first):
@@ -91,8 +80,8 @@ def main(argv=None):
 
 	#laço da batalha
 	while(result is True):
-		print('vez do ' + active.name + ' HP: ' + str(int(active.hp)) + '/' + str(int(active.maxhp)))
-		showAtks(active)
+		print('vez do ' + active.name + ' HP: ' + str(int(active.hp)) + '/' + str(int(active.maxhp)) + ' LVL: ' + str(active.level))
+		active.showAtks()
 		choice = int(input('Escolha o ataque de seu pokemon (1-4):\n')) -1
 
 		#processamento da escolha
@@ -128,7 +117,7 @@ def main(argv=None):
 		else:
 			active = first
 			defender = second
-		result = allAlive()
+		result = allAlive(first, second)
 
 	#fim da batalha
 	print(active.name + ' desmaiou! ' + defender.name + ' ganhou a luta!')

@@ -1,5 +1,5 @@
 nomePoke, level, type1, type2, hp, atk, dfs, spd, spc ----- nomeAtk, atkType, accu, power, pp
-Squirtle, 13, 10, 16, 480, 44, 44, 55, 55
+Squirtle, 13, 10, 16, 50, 44, 44, 55, 55
 Bubbles, 10, 100, 65, 15
 Tackle, 0, 100, 45, 25
 Mijada, 10, 100, 50, 20

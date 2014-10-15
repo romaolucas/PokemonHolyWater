@@ -1,11 +1,10 @@
 from os import sys
-from Type import type
+from battle import *
+from pokemon import *
 
-t = type.Type
+#input dos pokemons participantes
+argv = sys.argv
+first = Pokemon(argv[1])
+second = Pokemon(argv[2])
 
-for line in sys.stdin:
-    v = line.split()
-    res = type.getMultiplier(t(int(v[0])), t(int(v[1])), t(int(v[2])), t(int(v[3])), t(int(v[4])))
-    print(res)
-
-
+startBattle(first, second)

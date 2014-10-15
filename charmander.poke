@@ -1,5 +1,5 @@
 nomePoke, level, type1, type2, hp, atk, dfs, spd, spc ----- nomeAtk, atkType, accu, power, pp
-Charmander, 13, 9, 16, 480, 55, 55, 55, 55
+Charmander, 13, 9, 16, 48, 55, 55, 55, 55
 Ember, 9, 100, 65, 15
 Tackle, 0, 100, 45, 25
 Quick Attack, 0, 100, 50, 20

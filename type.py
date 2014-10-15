@@ -41,8 +41,5 @@ def getMultiplier(atker, atkType, defender):
 	ans = ans * Type.typeMatrix.value[atkType.value][defender.typ1.value]
 	ans = ans * Type.typeMatrix.value[atkType.value][defender.typ2.value]
 	return ans
-		
-
-
 	
 
