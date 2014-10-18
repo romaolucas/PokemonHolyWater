@@ -35,20 +35,15 @@ class Pokemon:
 		print('SPD: ' + str(self.spd))
 		print('SPC: ' + str(self.spc))
 
-	def hasToStruggle(self):#checar se vai usar struggle ou não
-		struggle = 4
+	def hasToStruggle(self):#checar se vai usar struggle ou não		
 		for atk in self.atks:
-			if (atk is None or atk.pp <= 0):
-				struggle -= 1
-		if (struggle == 0):
-			return True
-		return False
+			if (atk.hasPP()):
+				return False
+		
+		return True
 		
 	def showAtks(self): #printa os ataques do pokemon da vez para escolha do player
 		i = 0
 		for attack in self.atks:
-			print(str(i+1) + '-' + attack.name + ' - PWR: ' + str(attack.pwr) 
-	+ ' - PP: ' + str(attack.pp) + ' - ACC: ' + str(attack.accu) + ' - TYPE: ' + attack.typ.name)
+			print(str(i+1) + ' - ' + attack.show())
 			i += 1
-	
-	

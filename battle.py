@@ -1,5 +1,6 @@
 import sys
 import random
+import math
 from pokemon import *
 from type import *
 
@@ -66,7 +67,7 @@ def getDmg(active, defender, atk, typeMult, crit): #devolve o dano de um atk
 		defensiveStat = defender.spc
 	#calculo do baseDmg
 	baseDmg = ((((2*active.level) + 10)/250)*(offensiveStat/defensiveStat)*(atk.pwr)) + 2
-	return crit*baseDmg*typeMult*luck
+	return math.floor(crit * baseDmg * typeMult * luck)
 
 
 def startBattle(first, second):
@@ -79,36 +80,55 @@ def startBattle(first, second):
 	result = True
 
 	#laço da batalha
-	while(result is True):
-		print('vez do ' + active.name + ' HP: ' + str(int(active.hp)) + '/' + str(int(active.maxhp)) + ' LVL: ' + str(active.level))
+	while (result is True):
+		struggle = False
+		print('\nvez do ' + active.name + ' HP: ' + str(int(active.hp)) + '/' + str(int(active.maxhp)) + ' LVL: ' + str(active.level))
 		active.showAtks()
 		choice = int(input('Escolha o ataque de seu pokemon (1-4):\n')) -1
 
-		#processamento da escolha
 		if (active.hasToStruggle()):
-			a = 2 #substituir pro código do struggle aqui
-		elif not(choice in [0, 1, 2, 3]):
+			struggle = True
+
+		#processamento da escolha
+		if (not (choice in [0, 1, 2, 3])):
 			print('Escolha de ataque inválida!')
 			continue
-		elif (active.atks[choice] is None):
+		elif (choice in [0, 1, 2, 3] and len(active.atks) < choice + 1):
 			print('Espaço vazio, escolha outro ataque!')
 			continue
-		elif (active.atks[choice].pp <= 0):
+		elif (active.atks[choice].pp <= 0 and not struggle):
 			print('Sem PP para usar esse ataque!')
 			continue
+		
 		else:   #efeitos da choice
-			active.atks[choice].pp -= 1
-			typeMult = getMultiplier(active, active.atks[choice].typ, defender)
+			if (struggle):
+				attack = Attack('Struggle', Type(0), 100, 50, 10)
+			else:
+				attack = active.atks[choice]
+
+			if (not struggle):
+				attack.pp -= 1
+
+			typeMult = getMultiplier(active, attack.typ, defender)
 			crit = getCrit(active.spd, active.level)
 			critMsg = ''
 			if (crit != 1.0):
 				critMsg = ' Foi um ataque crítico!!'
-			dmg = getDmg(active, defender, active.atks[choice], typeMult, crit)
-			if (willHit(active.atks[choice].accu)):
+			dmg = getDmg(active, defender, attack, typeMult, crit)
+
+			if (struggle):
+				print(active.name + ' não tem mais nenhum ataque sobrando.')
+
+			if (willHit(attack.accu)):
 				defender.hp -= dmg
-				print(active.name + ' usou ' + active.atks[choice].name + effectMessage(typeMult) + critMsg)
+				print(active.name + ' usou ' + attack.name + effectMessage(typeMult) + critMsg)
+
 			else:
-				print(active.name + ' usou ' + active.atks[choice].name + ' e errou.')
+				print(active.name + ' usou ' + attack.name + ' e errou.')
+
+			if (struggle):
+				active.hp -= dmg / 2
+				print(active.name + ' tomou dano de recoil.')
 
 		#troca de turno
 		if (active is first):
@@ -121,8 +141,6 @@ def startBattle(first, second):
 
 	#fim da batalha
 	print(active.name + ' desmaiou! ' + defender.name + ' ganhou a luta!')
-
-
 
 
 if __name__ == "__main__":

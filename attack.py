@@ -27,4 +27,8 @@ class Attack:
 
 	def hasPP(self):
 		return self.pp > 0 and not(self.pp is None)
-	
+
+	def show(self):
+		return (self.name + ' - PWR: ' + str(self.pwr) + 
+		' - PP: ' + str(self.pp) + ' - ACC: ' + str(self.accu) +
+		' - TYPE: ' + self.typ.name)
