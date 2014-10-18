@@ -17,8 +17,11 @@ class Attack:
 		self.pp = pp
 		self.maxpp = pp
 
-		if (self.typ.name == 'normal' or self.typ.name == 'fighting' or self.typ.name == 'flying' or self.typ.name == 'ground'  or self.typ.name == 'rock'  or self.typ.name == 'bug' or self.typ.name == 'ghost' or self.typ.name == 'poison'):
-			self.special = False
+		if (self.typ.name == 'normal' or self.typ.name == 'fighting'
+			or self.typ.name == 'flying' or self.typ.name == 'ground'  
+			or self.typ.name == 'rock'  or self.typ.name == 'bug' 
+			or self.typ.name == 'ghost' or self.typ.name == 'poison'):
+				self.special = False
 		else:
 			self.special = True
 

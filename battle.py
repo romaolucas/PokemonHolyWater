@@ -47,11 +47,11 @@ def willHit(accu):
 	else:
 		return False
 
-def getCrit(speed):
+def getCrit(speed, level):
 	critRate = speed*100/512
 	chance = random.uniform(1, 100)
 	if (chance <= critRate):
-		return 2.0
+		return (2 * level + 5) / (level + 5)
 	else:
 		return 1.0
 
@@ -99,9 +99,9 @@ def startBattle(first, second):
 		else:   #efeitos da choice
 			active.atks[choice].pp -= 1
 			typeMult = getMultiplier(active, active.atks[choice].typ, defender)
-			crit = getCrit(active.spd)
+			crit = getCrit(active.spd, active.level)
 			critMsg = ''
-			if (crit == 2.0):
+			if (crit != 1.0):
 				critMsg = ' Foi um ataque crítico!!'
 			dmg = getDmg(active, defender, active.atks[choice], typeMult, crit)
 			if (willHit(active.atks[choice].accu)):
