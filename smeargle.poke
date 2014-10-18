@@ -1,0 +1,3 @@
+nomePoke, level, type1, type2, hp, atk, dfs, spd, spc ----- nomeAtk, atkType, accu, power, pp ----- tudo bem que o smeargle nem existia na gen 1 e sketch é um ataque não é pra implementar, isso aqui é só pra testar o struggle
+Smeargle, 50, 0, 16, 60, 60, 60, 60, 60
+Sketch, 0, 100, 0, 1
