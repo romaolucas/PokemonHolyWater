@@ -7,4 +7,4 @@ argv = sys.argv
 first = Pokemon(argv[1])
 second = Pokemon(argv[2])
 
-startBattle(first, second)
+Battle().startBattle(first, second)
