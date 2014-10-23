@@ -27,5 +27,14 @@ class TestPokemon(unittest.TestCase):
         self.assertEqual(getMultiplier(self.poke, Type(10), self.poke2), 3.0)
         self.assertEqual(getMultiplier(self.poke4, Type(1), self.poke3), 0.75)
 
+    def test_battle(self):
+        self.assertEqual(self.battle.getFirst(self.first, self.second), self.second)
+        self.assertFalse(self.battle.willHit(0))
+        self.assertAlmostEqual(self.battle.getCrit(512, 7), 19/14)
+        mult = getMultiplier(self.poke, self.poke.atk[0].typ, self.poke2)
+        crit = self.battle.getCrit(self.poke.speed, self.poke.level)
+        self.assertAlmostEqual(self.battle.getDmg(self.poke, self.poke2, 
+            self.poke.atk[0], mult, crit), 7 )
+
 if __name__ == '__main__':
     unittest.main()
