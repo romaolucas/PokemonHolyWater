@@ -1,14 +1,5 @@
-from type import Type
-
 class Attack:
-	name = None
-	typ = None
-	accu = None
-	pwr = None
-	pp = None
-	maxpp = None
-	special = None
-
+	
 	def __init__(self, name, typ, accu, pwr, pp):
 		self.name = name
 		self.typ = typ
@@ -26,9 +17,14 @@ class Attack:
 			self.special = True
 
 	def hasPP(self):
+		"""Determina se um ataque tem PP ou não"""
 		return self.pp > 0 and not(self.pp is None)
 
-	def show(self):
-		return (self.name + ' - PWR: ' + str(self.pwr) + 
-		' - PP: ' + str(self.pp) + ' - ACC: ' + str(self.accu) +
-		' - TYPE: ' + self.typ.name)
+	def show(self, detail):
+		"""Mostra as informações de um ataque com detalhe de acordo com detail"""
+		if detail:
+			return (self.name + ' - PWR: ' + str(self.pwr) + 
+			' - PP: ' + str(self.pp) + '/' + str(self.maxpp) +
+			' - ACC: ' + str(self.accu) + ' - TYPE: ' + self.typ.name)
+
+		return self.name + ', PP: ' + str(self.pp) + '/' + str(self.maxpp)
