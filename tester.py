@@ -30,11 +30,13 @@ class TestPokemon(unittest.TestCase):
     def test_battle(self):
         self.assertEqual(self.battle.getFirst(self.first, self.second), self.second)
         self.assertFalse(self.battle.willHit(0))
-        self.assertAlmostEqual(self.battle.getCrit(512, 7), 19/14)
-        mult = getMultiplier(self.poke, self.poke.atk[0].typ, self.poke2)
-        crit = self.battle.getCrit(self.poke.speed, self.poke.level)
-        self.assertAlmostEqual(self.battle.getDmg(self.poke, self.poke2, 
-            self.poke.atk[0], mult, crit), 7 )
+        self.assertAlmostEqual(self.battle.getCrit(512, 7), 19/12)
+        mult = getMultiplier(self.poke, self.poke.atks[0].typ, self.poke2)
+        crit = self.battle.getCrit(self.poke.spd, self.poke.level)
+        self.assertGreaterEqual(self.battle.getDmg(self.poke, self.poke2, 
+            self.poke.atks[0], mult, crit), 14.46 )
+        self.assertLessEqual(self.battle.getDmg(self.poke, self.poke2, 
+            self.poke.atks[0], mult, crit), 68.0)
 
 if __name__ == '__main__':
     unittest.main()
