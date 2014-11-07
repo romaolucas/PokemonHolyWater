@@ -12,7 +12,7 @@ class TestPokemon(unittest.TestCase):
         self.poke3 = Pokemon('hypno')
         self.poke4 = Pokemon('hitmonlee')
         self.first = Pokemon('ditto')
-        self.second = Pokemon('smeargle')
+        self.second = Pokemon('magikarp')
         self.battle = Battle()
 
     def teste_poke_creation(self):
