@@ -1,34 +1,82 @@
 import sys
+import xml.etree.ElementTree as ET
 from type import *
 from attack import *
 
 class Pokemon:
 
-	def __init__(self, arq):
-		if arq != sys.stdin:
-			# o argumento na linha de comando é o nome do arquivo sem '.poke'
-			arq = open(arq + ".poke")
-
-		self.name = arq.readline().strip()
-		self.level = int(arq.readline())
-		self.hp = int(arq.readline())
-		self.maxhp = self.hp
-		self.atk = int(arq.readline())
-		self.dfs = int(arq.readline())
-		self.spd = int(arq.readline())
-		self.spc = int(arq.readline())
-		self.typ1 = Type(int(arq.readline()))
-		self.typ2 = Type(int(arq.readline()))
-		natks = int(arq.readline())
-
-		self.atks = []
-		for i in range(natks):
-			self.atks.append(Attack(arq.readline().strip(),
-				Type(int(arq.readline())), int(arq.readline()),
-				int(arq.readline()), int(arq.readline())))
+	def __init__(self, arq, xml = False):
 		
-		if arq != sys.stdin:
-			arq.close()
+		if not xml:
+
+			if arq != sys.stdin:
+				# o argumento na linha de comando é o nome do arquivo sem '.poke'
+				arq = open(arq + ".poke")
+
+			self.name = arq.readline().strip()
+			self.level = int(arq.readline())
+			self.hp = int(arq.readline())
+			self.maxhp = self.hp
+			self.atk = int(arq.readline())
+			self.dfs = int(arq.readline())
+			self.spd = int(arq.readline())
+			self.spc = int(arq.readline())
+			self.typ1 = Type(int(arq.readline()))
+			self.typ2 = Type(int(arq.readline()))
+			natks = int(arq.readline())
+
+			self.atks = []
+			for i in range(natks):
+				self.atks.append(Attack(arq.readline().strip(),
+					Type(int(arq.readline())), int(arq.readline()),
+					int(arq.readline()), int(arq.readline())))
+			
+			if arq != sys.stdin:
+				arq.close()
+
+		else:
+			# obs: será que não teria que fazer uns try/except analogos a 
+			#	   esses pra quando le o pokemon do arquivo tbm? só pro
+			#	   programa não cuspir o traceback se der erro?
+			try:
+				root = ET.fromstring(arq)
+				poke = root[0]
+				stats = root[0].find('attributes')
+
+				self.name = poke.find('name').text
+				self.level = int(poke.find('level').text)
+				self.hp = int(stats.find('health').text)
+				self.maxhp = self.hp
+				self.atk = int(stats.find('attack').text)
+				self.dfs = int(stats.find('defense').text)
+				self.spd = int(stats.find('speed').text)
+				self.spc = int(stats.find('special').text)
+				self.typ1 = Type(int(poke.findall('type')[0].text))
+
+			except (AttributeError, IndexError):
+				print('Erro no formato do XML')
+				sys.exit()
+
+			try:	
+				self.typ2 = Type(int(poke.findall('type')[1].text))
+			
+			except IndexError:
+				self.typ2 = Type(16)
+
+			try:
+				self.atks = []
+
+				for atk in poke.findall('attacks'):
+					self.atks.append(Attack(
+									atk.find('name').text,
+									Type(int(atk.find('type').text)),
+									int(atk.find('accuracy').text),
+									int(atk.find('power').text),
+									int(atk.find('power_points').text)))
+			
+			except (AttributeError, IndexError):
+				print('Erro no formato do XML')
+				sys.exit()
 
 	def showStats(self):
 		"""Mostra os stats do Pokémon"""
@@ -53,3 +101,59 @@ class Pokemon:
 		for attack in self.atks:
 			print(str(i+1) + ' - ' + attack.show(detail))
 			i += 1
+
+	def toXML(self, xml):
+		"""
+		Recebe um XML (como uma string) representando um objeto battle_state e
+		adiciona nele um elemento pokemon correspondente ao Pokémon que chamou
+		o método. Retorna o XML modificado.
+		"""
+		root = ET.fromstring(xml)
+
+		if root.tag != 'battle_state':
+			print('Erro no formato do XML')
+			sys.exit()
+
+		poke    = ET.SubElement(root, 'pokemon')
+		name    = ET.SubElement(poke, 'name')
+		lvl     = ET.SubElement(poke, 'level')
+		attribs = ET.SubElement(poke, 'attributes')
+		hp      = ET.SubElement(attribs, 'health')
+		atk     = ET.SubElement(attribs, 'attack')
+		defense = ET.SubElement(attribs, 'defense')
+		speed   = ET.SubElement(attribs, 'speed')
+		special = ET.SubElement(attribs, 'special')
+		type1   = ET.SubElement(poke, 'type')
+		type2   = ET.SubElement(poke, 'type')
+
+		name.text    = self.name
+		lvl.text     = str(self.level)
+		hp.text      = str(self.hp)
+		atk.text     = str(self.atk)
+		defense.text = str(self.dfs)
+		speed.text   = str(self.spd)
+		special.text = str(self.spc)
+		type1.text   = str(self.typ1.value)
+		type2.text   = str(self.typ2.value)
+
+		i = 1
+		for atk in self.atks:
+		    
+		    attk  = ET.SubElement(poke, 'attacks')
+		    atkid = ET.SubElement(attk, 'id')
+		    name  = ET.SubElement(attk, 'name')
+		    typ   = ET.SubElement(attk, 'type')
+		    pwr   = ET.SubElement(attk, 'power')
+		    acc   = ET.SubElement(attk, 'accuracy')
+		    pp    = ET.SubElement(attk, 'power_points')
+
+		    atkid.text = str(i) 
+		    name.text  = atk.name
+		    typ.text   = str(atk.typ.value)
+		    pwr.text   = str(atk.pwr)
+		    acc.text   = str(atk.accu)
+		    pp.text    = str(atk.pp)    # considerando o PP atual, não o max
+
+		    i += 1
+
+		return ET.tostring(root, encoding = 'unicode')
