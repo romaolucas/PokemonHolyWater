@@ -1,5 +1,5 @@
 import sys
-import xml.etree.ElementTree as ET
+from lxml import etree
 from type import *
 from attack import *
 
@@ -11,7 +11,7 @@ class Pokemon:
 
 			if arq != sys.stdin:
 				# o argumento na linha de comando é o nome do arquivo sem '.poke'
-				arq = open("bill-pc/" + arq + ".poke")
+				arq = open("bill-pc/"+ arq + ".poke")
 
 			self.name = arq.readline().strip()
 			self.level = int(arq.readline())
@@ -35,27 +35,26 @@ class Pokemon:
 				arq.close()
 
 		else:
-			# obs: será que não teria que fazer uns try/except analogos a 
-			#	   esses pra quando le o pokemon do arquivo tbm? só pro
-			#	   programa não cuspir o traceback se der erro?
-			try:
-				root = ET.fromstring(arq)
-				poke = root[0]
-				stats = root[0].find('attributes')
 
-				self.name = poke.find('name').text
-				self.level = int(poke.find('level').text)
-				self.hp = int(stats.find('health').text)
-				self.maxhp = self.hp
-				self.atk = int(stats.find('attack').text)
-				self.dfs = int(stats.find('defense').text)
-				self.spd = int(stats.find('speed').text)
-				self.spc = int(stats.find('special').text)
-				self.typ1 = Type(int(poke.findall('type')[0].text))
+			xsd = open('pokemon.xsd', 'rb').read()
+			schema_root = etree.XML(xsd)
+			schema = etree.XMLSchema(schema_root)
+			parser = etree.XMLParser(schema = schema)
 
-			except (AttributeError, IndexError):
-				print('Erro no formato do XML')
-				sys.exit()
+			# arq é uma STRING com o XML
+			root = etree.fromstring(arq, parser)
+			poke = root[0]
+			stats = root[0].find('attributes')
+
+			self.name = poke.find('name').text
+			self.level = int(poke.find('level').text)
+			self.hp = int(stats.find('health').text)
+			self.maxhp = self.hp
+			self.atk = int(stats.find('attack').text)
+			self.dfs = int(stats.find('defense').text)
+			self.spd = int(stats.find('speed').text)
+			self.spc = int(stats.find('special').text)
+			self.typ1 = Type(int(poke.findall('type')[0].text))
 
 			try:	
 				self.typ2 = Type(int(poke.findall('type')[1].text))
@@ -63,20 +62,15 @@ class Pokemon:
 			except IndexError:
 				self.typ2 = Type(16)
 
-			try:
-				self.atks = []
+			self.atks = []
 
-				for atk in poke.findall('attacks'):
-					self.atks.append(Attack(
-									atk.find('name').text,
-									Type(int(atk.find('type').text)),
-									int(atk.find('accuracy').text),
-									int(atk.find('power').text),
-									int(atk.find('power_points').text)))
-			
-			except (AttributeError, IndexError):
-				print('Erro no formato do XML')
-				sys.exit()
+			for atk in poke.findall('attacks'):
+				self.atks.append(Attack(
+								atk.find('name').text,
+								Type(int(atk.find('type').text)),
+								int(atk.find('accuracy').text),
+								int(atk.find('power').text),
+								int(atk.find('power_points').text)))
 
 	def showStats(self):
 		"""Mostra os stats do Pokémon"""
@@ -107,24 +101,24 @@ class Pokemon:
 		Recebe um XML (como uma string) representando um objeto battle_state e
 		adiciona nele um elemento pokemon correspondente ao Pokémon que chamou
 		o método. Retorna o XML modificado.
-                """
-		root = ET.fromstring(xml)
+		"""
+		root = etree.fromstring(xml)
 
 		if root.tag != 'battle_state':
 			print('Erro no formato do XML')
 			sys.exit()
 
-		poke    = ET.SubElement(root, 'pokemon')
-		name    = ET.SubElement(poke, 'name')
-		lvl     = ET.SubElement(poke, 'level')
-		attribs = ET.SubElement(poke, 'attributes')
-		hp      = ET.SubElement(attribs, 'health')
-		atk     = ET.SubElement(attribs, 'attack')
-		defense = ET.SubElement(attribs, 'defense')
-		speed   = ET.SubElement(attribs, 'speed')
-		special = ET.SubElement(attribs, 'special')
-		type1   = ET.SubElement(poke, 'type')
-		type2   = ET.SubElement(poke, 'type')
+		poke    = etree.SubElement(root, 'pokemon')
+		name    = etree.SubElement(poke, 'name')
+		lvl     = etree.SubElement(poke, 'level')
+		attribs = etree.SubElement(poke, 'attributes')
+		hp      = etree.SubElement(attribs, 'health')
+		atk     = etree.SubElement(attribs, 'attack')
+		defense = etree.SubElement(attribs, 'defense')
+		speed   = etree.SubElement(attribs, 'speed')
+		special = etree.SubElement(attribs, 'special')
+		type1   = etree.SubElement(poke, 'type')
+		type2   = etree.SubElement(poke, 'type')
 
 		name.text    = self.name
 		lvl.text     = str(self.level)
@@ -139,13 +133,13 @@ class Pokemon:
 		i = 1
 		for atk in self.atks:
 		    
-		    attk  = ET.SubElement(poke, 'attacks')
-		    atkid = ET.SubElement(attk, 'id')
-		    name  = ET.SubElement(attk, 'name')
-		    typ   = ET.SubElement(attk, 'type')
-		    pwr   = ET.SubElement(attk, 'power')
-		    acc   = ET.SubElement(attk, 'accuracy')
-		    pp    = ET.SubElement(attk, 'power_points')
+		    attk  = etree.SubElement(poke, 'attacks')
+		    atkid = etree.SubElement(attk, 'id')
+		    name  = etree.SubElement(attk, 'name')
+		    typ   = etree.SubElement(attk, 'type')
+		    pwr   = etree.SubElement(attk, 'power')
+		    acc   = etree.SubElement(attk, 'accuracy')
+		    pp    = etree.SubElement(attk, 'power_points')
 
 		    atkid.text = str(i) 
 		    name.text  = atk.name
@@ -156,4 +150,4 @@ class Pokemon:
 
 		    i += 1
 
-		return ET.tostring(root, encoding = 'unicode')
+		return etree.tostring(root, encoding = 'unicode')
