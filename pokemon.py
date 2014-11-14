@@ -11,7 +11,7 @@ class Pokemon:
 
 			if arq != sys.stdin:
 				# o argumento na linha de comando é o nome do arquivo sem '.poke'
-				arq = open(arq + ".poke")
+				arq = open("bill-pc/" + arq + ".poke")
 
 			self.name = arq.readline().strip()
 			self.level = int(arq.readline())
@@ -107,7 +107,7 @@ class Pokemon:
 		Recebe um XML (como uma string) representando um objeto battle_state e
 		adiciona nele um elemento pokemon correspondente ao Pokémon que chamou
 		o método. Retorna o XML modificado.
-		"""
+                """
 		root = ET.fromstring(xml)
 
 		if root.tag != 'battle_state':
