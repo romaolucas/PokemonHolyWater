@@ -8,6 +8,13 @@ poke = Pokemon(sys.argv[1])
 r = requests.post('http://localhost:5000/battle/', data = poke.toXML(
                                     '<battle_state></battle_state>'))
 
+while r.status_code != 200:
+    print('status code: ', r.status_code)
+    arq = input('Digite um nome de arquivo valido: ')
+    poke = Pokemon(arq)
+    r = requests.post('http://localhost:5000/battle/', data = poke.toXML(
+                                    '<battle_state></battle_state>'))
+
 poke.showAtks()
 
 battle_state = etree.fromstring(r.text)
