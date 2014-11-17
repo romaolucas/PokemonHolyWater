@@ -4,20 +4,14 @@ from pokemon import *
 
 argv = sys.argv
 
-# se há dois argumentos de linha de comando, são os arquivos com Pokémons
-if len(sys.argv) == 3:
-    first = Pokemon(sys.argv[1])
-    second = Pokemon(sys.argv[2])
+if len(argv) < 2 or len(argv) > 3:
+    print('Erro! Indique o modo de operação (servidor ou cliente) pela linha de'
+          ' comando e ou dê o nome de um arquivo com o Pokémon a ser usado ou '
+          ' digite os dados do Pokémon pela entrada padrão, linha por linha.')
 
-elif len(sys.argv) == 2:
-    sys.exit('Erro! Ou dê o nome de dois arquivos ou escreva os detalhes'
-            ' dos Pokémons linha por linha na entrada padrão')
+if argv[1] == 'cliente':
+    import client
 
-# se não há nenhum argumento, leitura é pela entrada padrão,
-# sem redirecionamento de arquivo    
-elif len(sys.argv) == 1:
-    first = Pokemon(sys.stdin)
-    second = Pokemon(sys.stdin)
-
-# começa a batalha
-Battle().battle(first, second)
+elif argv[1] == 'servidor':
+    import pokeServer
+    pokeServer.app.run(debug = True)

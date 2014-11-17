@@ -4,15 +4,11 @@ from pokemon import Pokemon
 from lxml import etree
 from battle import Battle
  
-if len(sys.argv) == 2:
-    poke = Pokemon(sys.argv[1])
+if len(sys.argv) == 3:
+    poke = Pokemon(sys.argv[2])
 
-elif len(sys.argv) == 1:
+elif len(sys.argv) == 2:
     poke = Pokemon(sys.stdin)
-
-else:
-    sys.exit('Erro! Ou dê o nome de um arquivo ou escreva os detalhes'
-            ' do Pokémon linha por linha na entrada padrão')
 
 # começa a bataha
 r = requests.post('http://localhost:5000/battle/', data = poke.toXML(

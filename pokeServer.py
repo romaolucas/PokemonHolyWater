@@ -34,15 +34,15 @@ class Server():
         except etree.XMLSyntaxError as e:
             print('Erro de sintaxe no XML: ', e)
             abort(422)
-
-        name = input('Digite o nome do arquivo com o Pokémon que vai usar'
-                     ', ou digite stdin se vai entrar com as informações pela'
-                     'entrada padrão: ')
         
-        if name == 'stdin':
-            self.poke_server = Pokemon(sys.stdin)
-        else:
-            self.poke_server = Pokemon(name)
+        if len(sys.argv) == 3:
+            poke = Pokemon(sys.argv[2])
+
+        elif len(sys.argv) == 2:
+            poke = Pokemon(sys.stdin)
+
+        
+        self.poke_server = poke
 
         battle = Battle()
         first = battle.getFirst(self.poke_server, self.poke_cliente)
