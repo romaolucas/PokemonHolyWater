@@ -70,6 +70,7 @@ class Server():
         if battle.allAlive(self.poke_cliente, self.poke_server):
             battle.attack(self.poke_server, self.poke_cliente)
 
+        battle.allAlive(self.poke_cliente, self.poke_server)
         battle_state = self.poke_cliente.toXML('<battle_state></battle_state>')
         battle_state = self.poke_server.toXML(battle_state)
 
