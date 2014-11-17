@@ -34,7 +34,7 @@ poke2 = Pokemon(pkmn, xml = True)
  
 while battle.allAlive(poke, poke2):
 
-    atk_id = battle.make_choice(poke) + 1
+    atk_id = battle.make_choice(poke, poke2) + 1
     r = requests.post('http://localhost:5000/battle/attack/' + str(atk_id))
 
     poke = Pokemon(r.text, xml = True)

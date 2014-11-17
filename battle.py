@@ -100,10 +100,12 @@ class Battle():
         return math.floor(crit * baseDmg * typeMult * luck)
 
 
-    def make_choice(self, poke):
+    def make_choice(self, poke, pokeOponente):
         
+        print('\nAdversário: ' + pokeOponente.name + ', HP: ' + str(int(pokeOponente.hp)) +
+                '' + ', LVL: ' + str(pokeOponente.level))
         print('\nVez do ' + poke.name + ', HP: ' + str(int(poke.hp)) +
-                '/' + str(int(poke.maxhp)) + ', LVL: ' + str(poke.level))
+                '' + ', LVL: ' + str(poke.level))
 
         poke.showAtks()
         choice = input('Escolha o ataque de seu pokemon (1-' + 
@@ -147,7 +149,7 @@ class Battle():
 
         if choice == None:
 
-            choice = self.make_choice(first)
+            choice = self.make_choice(first, second)
 
             success = False
 

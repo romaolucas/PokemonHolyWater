@@ -24,7 +24,7 @@ class Attack:
 		"""Mostra as informações de um ataque com detalhe de acordo com detail"""
 		if detail:
 			return (self.name + ' - PWR: ' + str(self.pwr) + 
-			' - PP: ' + str(self.pp) + '/' + str(self.maxpp) +
+			' - PP restante: ' + str(self.pp) +
 			' - ACC: ' + str(self.accu) + ' - TYPE: ' + self.typ.name)
 
-		return self.name + ', PP: ' + str(self.pp) + '/' + str(self.maxpp)
+		return self.name + ', PP restante: ' + str(self.pp)
