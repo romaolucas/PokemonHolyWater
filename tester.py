@@ -2,6 +2,9 @@ from type import *
 from pokemon import *
 from attack import *
 from battle import *
+import pokeServer
+from lxml import etree
+from flask import request
 import unittest
 
 class TestPokemon(unittest.TestCase):
@@ -14,6 +17,8 @@ class TestPokemon(unittest.TestCase):
         self.first = Pokemon('ditto')
         self.second = Pokemon('magikarp')
         self.battle = Battle()
+        pokeServer.app.config['TESTING'] = True
+        self.app = pokeServer.app
 
     def teste_poke_creation(self):
         self.assertEqual(self.poke.typ1.name, 'water')
@@ -37,6 +42,25 @@ class TestPokemon(unittest.TestCase):
             self.poke.atks[0], mult, crit), 14.46 )
         self.assertLessEqual(self.battle.getDmg(self.poke, self.poke2, 
             self.poke.atks[0], mult, crit), 68.0)
+
+    def test_requests(self):
+        with self.app.test_request_context('/shutdown', method = 'POST'):
+            assert request.path == '/shutdown'
+            assert request.method == 'POST'
+
+        with self.app.test_request_context('/battle/', method = 'POST'):
+            assert request.path == '/battle/'
+            assert request.method == 'POST'
+
+        with self.app.test_client() as teste:
+           test = teste.post('/battle/', data = {'oi': 'cueio'})
+           assert 200 is not test.status_code
+           test = teste.post('/battle/', data = '')
+           assert 200 is not test.status_code
+
+           test = teste.post('/shutdown')
+           assert 'You have been terminated.' in test.data
+           assert 200 is test.status_code
 
 if __name__ == '__main__':
     unittest.main()
