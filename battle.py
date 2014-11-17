@@ -7,10 +7,27 @@ class Battle():
     
     def allAlive(self, first, second):
         """Checa se a batalha deve continuar ou acabar"""
-        if first.hp <= 0 or second.hp <= 0:
+        if first.hp <= 0 and second.hp <= 0:
+            print('Ambos os pokémon desmaiaram! Empate!')
+            first.hp = second.hp = 0
+
             return False
-        else:
-             return True
+
+        elif first.hp <= 0:
+            print('\n' + first.name + ' desmaiou! ' +
+                  second.name + ' ganhou a luta!\n')
+            first.hp = 0
+
+            return False
+
+        elif second.hp <= 0:
+            print('\n' + second.name + ' desmaiou! ' +
+                  first.name + ' ganhou a luta!\n')
+            second.hp = 0
+
+            return False
+
+        return True
 
     def getFirst(self, poke1, poke2):
         """Decide qual Pokémon vai começar atacando"""
@@ -83,101 +100,118 @@ class Battle():
         return math.floor(crit * baseDmg * typeMult * luck)
 
 
-    def battle(self, first, second):
+    def make_choice(self, poke):
+        
+        print('\nVez do ' + poke.name + ', HP: ' + str(int(poke.hp)) +
+                '/' + str(int(poke.maxhp)) + ', LVL: ' + str(poke.level))
+
+        poke.showAtks()
+        choice = input('Escolha o ataque de seu pokemon (1-' + 
+                        str(len(poke.atks)) + ').\n'
+                        'Ou, para ver mais informações, digite +:\n')
+
+        if choice == '+':
+            print('')
+            poke.showStats()
+            poke.showAtks(True)
+            choice = input('\nEscolha o ataque de seu Pokémon (1-' + 
+                            str(len(poke.atks)) + ').\n')
+            
+        try:
+            choice = int(choice) - 1
+
+        except ValueError:
+            choice = -1
+
+        return choice
+
+    def attack(self, first, second, choice = None):
         """Executa o laço da batalha."""
 
         # determina primeiro quem começa
-        active = self.getFirst(first, second)
-        if active is first:
-            defender = second
-        else:
-            defender = first
+        #active = self.getFirst(first, second)
+        #if active is first:
+        #    defender = second
+        #else:
+        #    defender = first
         
-        result = True
+        #result = True
 
         # laço da batalha
-        while result is True:
-            
-            struggle = False
+        #while result is True:
+    
+        struggle = False
+        
+        if first.hasToStruggle():
+            struggle = True
 
-            print('\nVez do ' + active.name + ', HP: ' + str(int(active.hp)) +
-                    '/' + str(int(active.maxhp)) + ', LVL: ' + str(active.level))
-            
-            active.showAtks()
-            choice = input('Escolha o ataque de seu pokemon (1-' + 
-                            str(len(active.atks)) + ').\n'
-                            'Ou, para ver mais informações, digite +:\n')
+        if choice == None:
 
-            if choice == '+':
-                print('')
-                active.showStats()
-                active.showAtks(True)
-                choice = input('\nEscolha o ataque de seu Pokémon (1-' + 
-                                str(len(active.atks)) + ').\n')
-                
-            try:
-                choice = int(choice) - 1
+            choice = self.make_choice(first)
 
-            except ValueError:
-                choice = -1
+            success = False
 
-
-            if active.hasToStruggle():
-                struggle = True
-
+            while not success:
             # processamento da escolha
-            if not (choice in [0, 1, 2, 3]):
-                print('Escolha de ataque inválida!')
-                continue
-            elif choice in [0, 1, 2, 3] and len(active.atks) < choice + 1:
-                print('Espaço vazio, escolha outro ataque!')
-                continue
-            elif active.atks[choice].pp <= 0 and not struggle:
-                print('Sem PP para usar esse ataque!')
-                continue
-            
-            # efeitos da escolha
-            else:
+                if not (choice in [0, 1, 2, 3]):
+                    print('Escolha de ataque inválida!')
+                    choice = self.make_choice(first)
 
-                if struggle:
-                    attack = Attack('Struggle', Type(0), 100, 50, 10)
-                else:
-                    attack = active.atks[choice]
-                    attack.pp -= 1
+                elif choice in [0, 1, 2, 3] and len(first.atks) < choice + 1:
+                    print('Espaço vazio, escolha outro ataque!')
+                    choice = self.make_choice(first)
 
-                typeMult = getMultiplier(active, attack.typ, defender)
-                crit = self.getCrit(active.spd, active.level)
-                
-                critMsg = ''
-                if crit != 1.0:
-                    critMsg = ' Foi um ataque crítico!!'
-                
-                dmg = self.getDmg(active, defender, attack, typeMult, crit)
-
-                if struggle:
-                    print(active.name + ' não tem mais nenhum ataque sobrando.')
-
-                if self.willHit(attack.accu):
-                    defender.hp -= dmg
-                    print(active.name + ' usou ' + attack.name +
-                            self.effectMessage(typeMult) + critMsg)
+                elif first.atks[choice].pp <= 0 and not struggle:
+                    print('Sem PP para usar esse ataque!')
+                    choice = self.make_choice(first)
 
                 else:
-                    print(active.name + ' usou ' + attack.name + ' e errou.')
+                    success = True
 
-                if struggle:
-                    active.hp -= dmg / 2
-                    print(active.name + ' tomou dano de recoil.')
+        
+        # efeitos da escolha
+        #else:
 
-            # troca de turno
-            if active is first:
-                active = second
-                defender = first
-            else:
-                active = first
-                defender = second
-            result = self.allAlive(first, second)
+        if struggle:
+            attack = Attack('Struggle', Type(0), 100, 50, 10)
+        else:
+            attack = first.atks[choice]
+            attack.pp -= 1
+
+        typeMult = getMultiplier(first, attack.typ, second)
+        crit = self.getCrit(first.spd, first.level)
+        
+        critMsg = ''
+        if crit != 1.0:
+            critMsg = ' Foi um ataque crítico!!'
+        
+        dmg = self.getDmg(first, second, attack, typeMult, crit)
+
+        if struggle:
+            print(first.name + ' não tem mais nenhum ataque sobrando.')
+
+        if self.willHit(attack.accu):
+            second.hp -= dmg
+            print(first.name + ' usou ' + attack.name +
+                    self.effectMessage(typeMult) + critMsg)
+
+        else:
+            print(first.name + ' usou ' + attack.name + ' e errou.')
+
+        if struggle:
+            first.hp -= math.floor(dmg / 2)
+            print(first.name + ' tomou dano de recoil.')
+
+
+        # troca de turno
+        #if active is first:
+        #    active = second
+        #    defender = first
+        #else:
+        #    active = first
+        #    defender = second
+        #result = self.allAlive(first, second)
 
         # fim da batalha
-        print('\n' + active.name + ' desmaiou! ' + defender.name + 
-            ' ganhou a luta!\n')
+        #print('\n' + active.name + ' desmaiou! ' + defender.name + 
+        #    ' ganhou a luta!\n')
