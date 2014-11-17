@@ -1,0 +1,29 @@
+Nome: Lucas Romão Silva         NUSP: 8536214
+Nome: Cesar Cano de Oliveira    NUSP: 8536169
+Nome: Fabio Muller              NUSP: 8536127 
+Nome: João Henrique Luciano     NUSP: 8535957
+
+Nome do Professor: Alfredo Goldman
+Data: 17/11/2014
+
+            Relatório do projeto - Etapa 2
+
+    A etapa 2 do projeto de Laboratório de Programação 2 consistiu
+em transformar o programa desenvolvido na etapa 1, uma batalha pokemon,
+em um aplicativo web, de tal forma que dois jogadores em computadores
+diferentes poderia batalhar entre si, um atuando como servidor e outro,
+como cliente.
+    A ferramenta utilizada no processo foi o Flask, um microframework
+de desenvolvimento web. Tal ferramenta apresentou dificuldades em ser
+dominada, por conta de sua complexidade e pela pouca experiência, até 
+então, com aplicações web. Tanto que tivemos dificuldade em executar 
+a batalha em redes remotas por problemas em conectar dois computadores
+remotamente. Por esse motivo, estamos considerando a conexão com
+o 'localhost' apenas.
+    No enunciado dessa etapa, foi pedido que caso o servidor não
+conseguisse pegar um objeto battle_state, que retornasse um erro do tipo
+423. Mas não achamos que a descrição do erro 423 explicasse exatamente o
+erro que ocorreria nesse caso. Assim, mudamos para o erro 422, que é mais
+preciso ao caracterizar o erro.
+    Em um efeito cascata, os testes ofereceram dificuldade por conta do 
+desconhecimento da ferramenta e de sua vasta API.
