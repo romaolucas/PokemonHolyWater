@@ -18,7 +18,7 @@ class TestPokemon(unittest.TestCase):
         self.second = Pokemon('magikarp')
         self.battle = Battle()
         pokeServer.app.config['TESTING'] = True
-        self.app = pokeServer.app
+        self.app = pokeServer.app.test_client()
 
     def teste_poke_creation(self):
         self.assertEqual(self.poke.typ1.name, 'water')
@@ -44,23 +44,13 @@ class TestPokemon(unittest.TestCase):
             self.poke.atks[0], mult, crit), 68.0)
 
     def test_requests(self):
-        with self.app.test_request_context('/shutdown', method = 'POST'):
-            assert request.path == '/shutdown'
-            assert request.method == 'POST'
-
-        with self.app.test_request_context('/battle/', method = 'POST'):
-            assert request.path == '/battle/'
-            assert request.method == 'POST'
-
-        with self.app.test_client() as teste:
-           test = teste.post('/battle/', data = {'oi': 'cueio'})
-           assert 200 is not test.status_code
-           test = teste.post('/battle/', data = '')
-           assert 200 is not test.status_code
-
-           test = teste.post('/shutdown')
-           assert 'You have been terminated.' in test.data
-           assert 200 is test.status_code
+        test = self.app.post('/battle/', data = {'oi': ' cueio'})
+        assert 200 is not test.status_code
+        test = self.app.post('/battle/', data = 'magikarp')
+        assert 200 is not test.status_code
+        test = self.app.post('/battle/', data = '')
+        assert 200 is not test.status_code
+        self.assertRaises(RuntimeError, self.app.post, '/shutdown')
 
 if __name__ == '__main__':
     unittest.main()
