@@ -65,23 +65,34 @@ class Server():
         battle = Battle()
         battle.attack(self.poke_cliente, self.poke_server, choice = id - 1)
 
-        print('Voce escolheu o ataque: ', self.poke_cliente.atks[id - 1].name)
+        print('Oponente escolheu o ataque: ', self.poke_cliente.atks[id - 1].name)
 
-        battle.allAlive(self.poke_cliente, self.poke_server)
-
-        battle.attack(self.poke_server, self.poke_cliente)
-
-        battle.allAlive(self.poke_cliente, self.poke_server)
+        if battle.allAlive(self.poke_cliente, self.poke_server):
+            battle.attack(self.poke_server, self.poke_cliente)
 
         battle_state = self.poke_cliente.toXML('<battle_state></battle_state>')
         battle_state = self.poke_server.toXML(battle_state)
 
         return battle_state, 200
 
+    from flask import request
+
+    def shutdown_server(self):
+        func = request.environ.get('werkzeug.server.shutdown')
+        if func is None:
+                raise RuntimeError('Not running with the Werkzeug Server')
+        func()
+
+    def shutdown(self):
+        self.shutdown_server()
+        return 'You have been terminated'
+
 serv = Server()
 
 app.add_url_rule('/battle/', 'startBattle', serv.startBattle, methods=['POST'])
 app.add_url_rule('/battle/attack/<int:id>', 'computeAttack', serv.computeAttack,  methods=['POST'])
+app.add_url_rule('/shutdown', 'shutdown', serv.shutdown, methods=['POST'])
+
 
 if __name__ == '__main__':
     app.run(debug = True)

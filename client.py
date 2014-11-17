@@ -49,3 +49,5 @@ while battle.allAlive(poke, poke2):
     pkmn = etree.tostring(battle_state, encoding = 'unicode')
  
     poke2 = Pokemon(pkmn, xml = True)
+
+r = requests.post('http://localhost:5000/shutdown')
