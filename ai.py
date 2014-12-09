@@ -8,9 +8,10 @@ from battle import *
 class AI():
 
 
-    def __init__(self, mode):
-        self.mode = mode
-        self.maxpwr = 180
+    def __init__(self, lockmode = "off"):
+        self.lockmode = lockmode
+        self.mode = lockmode
+        self.maxpwr = 100
         self.lvlweight = 0.2   #pesos que mostram quanto vale cada stats
         self.maxweight = 0.35  #na hora do battlechance (somam 1.0)
         self.meanweight = 0.3
@@ -20,7 +21,6 @@ class AI():
         #dano esperado de cada ataque disponível
     def getExpectedDmg(self, atker, atk, defender):
         power = atk.pwr / self.maxpwr
-        if power > 1 : power = 1
         accu = atk.accu / 100
         mult = getMultiplier(atker, atk.typ, defender) / 6
         
@@ -43,11 +43,11 @@ class AI():
             dmg = 0
             if atk.pp > 0 and atk.accu >= minAccu:
                 dmg = self.getExpectedDmg(atker, atk, defender)
-                print("dano do atk " + atk.name + " eh " + str(dmg))
+             #   print("dano do atk " + atk.name + " eh " + str(dmg))
             atkScores.append(dmg)
             
         choice = atkScores.index(max(atkScores))
-       
+     #  print("atk escolhido no modo: " + self.mode)
         return choice
        
        #calculo da chance de batalha, o que faz possivelmente alterar o modo de
@@ -62,35 +62,36 @@ class AI():
         if hpratio >= 5 : hpratio = self.hpweight
         else : hpratio = self.hpweight * hpratio / 5 
         
-        levelratio = (atker.level / defender.level) / 100
-        if levelratio >= 0.4 : self.lvlweight = 0.2
-        else : levelratio = self.lvlweight * levelratio / 0.4
+        leveldif = atker.level - defender.level
+        if leveldif >= 20 : leveldif = self.lvlweight
+        elif leveldif <= -20 : leveldif = -self.lvlweight
+        else : leveldif = self.lvlweight * leveldif / 20
         
-        speedratio = atker.spd / 512
-        if speedratio >= 0.4 : speedratio = self.spdweight
-        else : speedratio = self.spdweight * speedratio / 0.4
+        speedratio = atker.spd / 255
+        if speedratio >= 0.8 : speedratio = self.spdweight
+        else : speedratio = self.spdweight * speedratio / 0.8
         
         maxpwr = self.maxweight * max(atksPwr)
         meanpwr = self.meanweight * sum(atksPwr) / float(len(atksPwr))
         
-        print("Status do " + atker.name)
-        print("level ratio: " + str(100*levelratio))
-        print("maxpwr: " + str(100*maxpwr))
-        print("hpratio: " + str(100*hpratio))
-        print("meanpwr: " + str(100*meanpwr))
-        print("speedratio: " + str(100*speedratio))
-        chanceSum = 100 * (hpratio + levelratio + speedratio + maxpwr + meanpwr)
+     #   print("Status do " + atker.name)
+     #   print("level ratio: " + str(100*leveldif))
+     #   print("maxpwr: " + str(100*maxpwr))
+     #   print("hpratio: " + str(100*hpratio))
+     #   print("meanpwr: " + str(100*meanpwr))
+     #   print("speedratio: " + str(100*speedratio))
+        chanceSum = 100 * (hpratio + leveldif + speedratio + maxpwr + meanpwr)
         
         return chanceSum
         
     def changeBattleMode(self, atker, defender):
-        chanceScore = self.calculateBattleChance(atker, defender)
-        if (chanceScore >= 15): mode = "safe"
-        elif (chanceScore >= 10): mode = "risky"
-        else : mode = "allin"
-        
-        self.mode = mode
-        print("\nScore: " + str(chanceScore) + " - " + mode + " ativado!\n")
+        if (self.lockmode == "off"):
+            chanceScore = self.calculateBattleChance(atker, defender)
+            if (chanceScore >= 20): mode = "safe"
+            elif (chanceScore >= 15): mode = "risky"
+            else : mode = "allin"
+            self.mode = mode
+          # print("Score: " + str(chanceScore) + " - " + mode + " ativado!")
    
         
         
