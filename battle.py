@@ -2,6 +2,7 @@ import random
 import math
 from pokemon import *
 from type import *
+from ai import *
 
 class Battle():
     
@@ -100,8 +101,15 @@ class Battle():
         return math.floor(crit * baseDmg * typeMult * luck)
 
 
-    def make_choice(self, poke, pokeOponente):
+    def make_choice(self, poke, pokeOponente, ai = None):
         
+        #comportamento com AI
+        if (ai != None):
+            ai.changeBattleMode(poke, pokeOponente)
+            choice = ai.chooseAtk(poke, pokeOponente, 70)
+            return choice
+            
+        #comportamento sem AI
         print('\nAdversário: ' + pokeOponente.name + ', HP: ' + str(int(pokeOponente.hp)) +
                 '' + ', LVL: ' + str(pokeOponente.level))
         print('\nVez do ' + poke.name + ', HP: ' + str(int(poke.hp)) +
