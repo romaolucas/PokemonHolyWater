@@ -85,8 +85,8 @@ class AI():
         
     def changeBattleMode(self, atker, defender):
         chanceScore = self.calculateBattleChance(atker, defender)
-        if (chanceScore >= 25): mode = "safe"
-        elif (chanceScore >= 15): mode = "risky"
+        if (chanceScore >= 15): mode = "safe"
+        elif (chanceScore >= 10): mode = "risky"
         else : mode = "allin"
         
         self.mode = mode
