@@ -3,10 +3,10 @@ from pokemon import Pokemon
 from battle import Battle
 from ai import *
  
-poke2 = Pokemon("rattata")
-poke1 = Pokemon("pidgey")
-ai = AI("safe")
-
+poke2 = Pokemon("squirtle")
+poke1 = Pokemon("charmander")
+ai = AI()
+ai.set_up(poke2, poke1)
 battle = Battle()
 
 

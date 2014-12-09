@@ -101,12 +101,12 @@ class Battle():
         return math.floor(crit * baseDmg * typeMult * luck)
 
 
-    def make_choice(self, poke, pokeOponente, ai = None):
+    def make_choice(self, poke, pokeOponente, ai=None):
         
         #comportamento com AI
         if (ai != None):
-            ai.changeBattleMode(poke, pokeOponente)
-            choice = ai.chooseAtk(poke, pokeOponente, 70)
+            ai.change_battle_mode(poke, pokeOponente)
+            choice = ai.choose_atk(poke, pokeOponente, 70)
             return choice
             
         #comportamento sem AI
