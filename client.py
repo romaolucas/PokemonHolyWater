@@ -4,14 +4,20 @@ from pokemon import Pokemon
 from lxml import etree
 from battle import Battle
 from ai import *
- 
-if len(sys.argv) == 3:
+
+ai = None
+
+if len(sys.argv) == 4:
+    ai = AI()
+
+if len(sys.argv) >= 3:
     poke = Pokemon(sys.argv[2])
 
 elif len(sys.argv) == 2:
     poke = Pokemon(sys.stdin)
 
 # começa a bataha
+
 
 r = requests.post('http://localhost:5000/battle/', data = poke.to_XML(
                                     '<battle_state></battle_state>'))
@@ -24,7 +30,6 @@ while r.status_code != 200:
                                     '<battle_state></battle_state>'))
 
 battle = Battle()
-ai = AI()
 
 poke = Pokemon(r.text, xml = True)
 

@@ -4,10 +4,10 @@ from pokemon import *
 
 argv = sys.argv
 
-if len(argv) < 2 or len(argv) > 3:
-    print('Erro! Indique o modo de operação (servidor ou cliente) pela linha de'
-          ' comando e ou dê o nome de um arquivo com o Pokémon a ser usado ou '
-          ' digite os dados do Pokémon pela entrada padrão, linha por linha.')
+if len(argv) < 2 or len(argv) > 4:
+    print('Erro! Modo de execucao nao reconhecido.'
+            'Uso: python3 main.py <cliente/servidor> <nome do pokemon> (opcional) <ai> (opcional)'
+            'A opcao ai so vale para cliente')
 
 if argv[1] == 'cliente':
     import client

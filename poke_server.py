@@ -11,6 +11,8 @@ class Server():
 
     _poke_cliente = None
     _poke_server  = None
+    _battle = None
+    _ai = None
 
     @property
     def poke_cliente(self):
@@ -20,6 +22,14 @@ class Server():
     def poke_server(self):
         return self._poke_server
 
+    @property
+    def ai(self):
+        return self._ai
+
+    @property
+    def battle(self):
+        return self._battle
+
     @poke_cliente.setter
     def poke_cliente(self, value):
         self._poke_cliente = value
@@ -27,6 +37,14 @@ class Server():
     @poke_server.setter
     def poke_server(self, value):
         self._poke_server = value
+
+    @battle.setter
+    def battle(self, value):
+        self._battle = value
+
+    @ai.setter
+    def ai(self, value):
+        self._ai = value
 
     def start_battle(self):
         try:
@@ -45,16 +63,16 @@ class Server():
         
         self.poke_server = poke
 
-        battle = Battle()
-        ai = AI()
+        self.battle = Battle()
+        self.ai = AI()
 
-        first = battle.get_first(self.poke_server, self.poke_cliente)
+        first = self.battle.get_first(self.poke_server, self.poke_cliente)
 
         if first is self.poke_server:
-            choice = battle.make_choice(self.poke_server, self.poke_cliente, ai)
+            choice = self.battle.make_choice(self.poke_server, self.poke_cliente, self.ai)
             battle.attack(self.poke_server, self.poke_cliente, choice)
 
-            battle.all_alive(self.poke_server, self.poke_cliente)
+            self.battle.all_alive(self.poke_server, self.poke_cliente)
 
             xml = self.poke_cliente.to_XML('<battle_state></battle_state>')
             xml = self.poke_server.to_XML(xml)
@@ -66,18 +84,15 @@ class Server():
      
     def compute_attack(self, id):
         
-        battle = Battle()
-        ai = AI()
-
-        battle.attack(self.poke_cliente, self.poke_server, choice = id - 1)
+        self.battle.attack(self.poke_cliente, self.poke_server, choice = id - 1)
 
         print('Oponente escolheu o ataque: ', self.poke_cliente.atks[id - 1].name)
 
-        if battle.all_alive(self.poke_cliente, self.poke_server):
-            choice = battle.make_choice(self.poke_server, self.poke_cliente, ai)
-            battle.attack(self.poke_server, self.poke_cliente, choice)
+        if self.battle.all_alive(self.poke_cliente, self.poke_server):
+            choice = self.battle.make_choice(self.poke_server, self.poke_cliente, self.ai)
+            self.battle.attack(self.poke_server, self.poke_cliente, choice)
 
-        battle.all_alive(self.poke_cliente, self.poke_server)
+        self.battle.all_alive(self.poke_cliente, self.poke_server)
         battle_state = self.poke_cliente.to_XML('<battle_state></battle_state>')
         battle_state = self.poke_server.to_XML(battle_state)
 
