@@ -19,7 +19,7 @@ class Type(Enum):
 	ice = 14
 	dragon = 15
 	blank = 16
-	typeMatrix =[[1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+	type_matrix =[[1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
 		     [2.0, 1.0, 0.5, 0.5, 1.0, 2.0, 0.0, 0.5, 0.0, 1.0, 1.0, 1.0, 1.0, 0.5, 2.0, 1.0, 1.0],
 		     [1.0, 2.0, 1.0, 1.0, 1.0, 0.5, 0.0, 2.0, 1.0, 1.0, 1.0, 2.0, 0.5, 1.0, 1.0, 1.0, 1.0],
 		     [1.0, 1.0, 1.0, 0.5, 0.5, 0.5, 0.0, 1.0, 0.5, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0],
@@ -36,14 +36,14 @@ class Type(Enum):
 		     [1.0, 1.0, 2.0, 1.0, 2.0, 1.0, 0.0, 1.0, 1.0, 0.5, 0.5, 2.0, 1.0, 1.0, 0.5, 2.0, 1.0],
 		     [1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0]]
 
-def getMultiplier(atker, atkType, defender):
+def get_multiplier(atker, atk_type, defender):
 	"""Calcula o multiplicador de efetividade de um ataque em um Pokémon"""
 	ans = 1.0
 
-	if (atkType is atker.typ1) or (atkType is atker.typ2):
+	if (atk_type is atker.typ1) or (atk_type is atker.typ2):
 		ans = ans * 1.5 # aplicando STAB (Same Type Attack Bonus)
 
-	ans = ans * Type.typeMatrix.value[atkType.value][defender.typ1.value]
-	ans = ans * Type.typeMatrix.value[atkType.value][defender.typ2.value]
+	ans = ans * Type.type_matrix.value[atk_type.value][defender.typ1.value]
+	ans = ans * Type.type_matrix.value[atk_type.value][defender.typ2.value]
 	
 	return ans

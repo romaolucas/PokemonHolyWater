@@ -13,5 +13,5 @@ if argv[1] == 'cliente':
     import client
 
 elif argv[1] == 'servidor':
-    import pokeServer
-    pokeServer.app.run(debug = True)
+    import poke_server
+    poke_server.app.run(debug = True)

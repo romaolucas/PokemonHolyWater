@@ -1,5 +1,3 @@
-import random
-import math
 from pokemon import *
 from type import *
 from attack import *
@@ -23,7 +21,7 @@ class AI():
         no defender'''
         power = atk.pwr / self.maxpwr
         accu = atk.accu / 100
-        mult = getMultiplier(atker, atk.typ, defender) / 6
+        mult = get_multiplier(atker, atk.typ, defender) / 6
         
         score = (power * mult * accu) 
         
@@ -93,5 +91,3 @@ class AI():
         
         self.mode = mode
         print("\nScore: " + str(chance_score) + " - " + mode + " ativado!\n")
-
-

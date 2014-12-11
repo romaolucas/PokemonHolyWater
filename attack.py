@@ -16,7 +16,7 @@ class Attack:
 		else:
 			self.special = True
 
-	def hasPP(self):
+	def has_PP(self):
 		"""Determina se um ataque tem PP ou não"""
 		return self.pp > 0 and not(self.pp is None)
 

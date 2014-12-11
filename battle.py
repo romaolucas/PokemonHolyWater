@@ -6,7 +6,7 @@ from ai import *
 
 class Battle():
     
-    def allAlive(self, first, second):
+    def all_alive(self, first, second):
         """Checa se a batalha deve continuar ou acabar"""
         if first.hp <= 0 and second.hp <= 0:
             print('Ambos os pokémon desmaiaram! Empate!')
@@ -30,10 +30,10 @@ class Battle():
 
         return True
 
-    def getFirst(self, poke1, poke2):
+    def get_first(self, poke1, poke2):
         """Decide qual Pokémon vai começar atacando"""
         if poke1.spd == poke2.spd:
-            chance = random.randint(1, 100)
+            chance = random.randint(0, 100)
             if chance < 50:
                 return poke1
             else:
@@ -44,7 +44,7 @@ class Battle():
             else:
                 return poke2
 
-    def effectMessage(self, mult):
+    def effect_message(self, mult):
         """Gera mensagem indicando efetividade de um ataque"""
         if mult <= 0.75 and mult > 0:
             return ' e foi pouco efetivo.'
@@ -55,7 +55,7 @@ class Battle():
         else:
             return '.'
 
-    def getLuck(self):
+    def get_luck(self):
         """Calcula o fator aleatório a ser usado na fórmula de dano"""
         luck = random.randint(217, 255)
         luck = luck * 100
@@ -63,7 +63,7 @@ class Battle():
         luck = luck / 100
         return luck
 
-    def willHit(self, accu):
+    def will_hit(self, accu):
         """Determina se um ataque vai acertar ou errar"""
         chance = random.uniform(1, 100)
         if chance <= accu:
@@ -71,59 +71,59 @@ class Battle():
         else:
             return False
 
-    def getCrit(self, speed, level):
+    def get_crit(self, speed, level):
         """Determina o multiplicador de critical hit"""
-        critRate = speed * 100 / 512
+        crit_rate = speed * 100 / 512
         chance = random.uniform(1, 100)
-        if chance <= critRate:
+        if chance <= crit_rate:
             return (2 * level + 5) / (level + 5)
         else:
             return 1.0
 
-    def getDmg(self, active, defender, atk, typeMult, crit):
+    def get_dmg(self, active, defender, atk, type_mult, crit):
         """
         Determina o dano que um ataque de um Pokémon vai causar
         em outro Pokémon
         """
-        luck = self.getLuck()
+        luck = self.get_luck()
 
         if not atk.special:
-            offensiveStat = active.atk
-            defensiveStat = defender.dfs
+            offensive_stat = active.atk
+            defensive_stat = defender.dfs
         else:
-            offensiveStat = active.spc
-            defensiveStat = defender.spc
+            offensive_stat = active.spc
+            defensive_stat = defender.spc
         
         # cálculo do baseDmg
-        baseDmg = ((((2 * active.level) + 10) / 250) * (offensiveStat /
-                                        defensiveStat) * (atk.pwr)) + 2
+        base_dmg = ((((2 * active.level) + 10) / 250) * (offensive_stat /
+                                        defensive_stat) * (atk.pwr)) + 2
 
-        return math.floor(crit * baseDmg * typeMult * luck)
+        return math.floor(crit * base_dmg * type_mult * luck)
 
 
-    def make_choice(self, poke, pokeOponente, ai=None):
+    def make_choice(self, poke, poke_oponente, ai=None):
         
         #comportamento com AI
         if (ai != None):
-            ai.change_battle_mode(poke, pokeOponente)
-            choice = ai.choose_atk(poke, pokeOponente, 70)
+            ai.change_battle_mode(poke, poke_oponente)
+            choice = ai.choose_atk(poke, poke_oponente, 70)
             return choice
             
         #comportamento sem AI
-        print('\nAdversário: ' + pokeOponente.name + ', HP: ' + str(int(pokeOponente.hp)) +
-                '' + ', LVL: ' + str(pokeOponente.level))
+        print('\nAdversário: ' + poke_oponente.name + ', HP: ' + str(int(poke_oponente.hp)) +
+                '' + ', LVL: ' + str(poke_oponente.level))
         print('\nVez do ' + poke.name + ', HP: ' + str(int(poke.hp)) +
                 '' + ', LVL: ' + str(poke.level))
 
-        poke.showAtks()
+        poke.show_atks()
         choice = input('Escolha o ataque de seu pokemon (1-' + 
                         str(len(poke.atks)) + ').\n'
                         'Ou, para ver mais informações, digite +:\n')
 
         if choice == '+':
             print('')
-            poke.showStats()
-            poke.showAtks(True)
+            poke.show_stats()
+            poke.show_atks(True)
             choice = input('\nEscolha o ataque de seu Pokémon (1-' + 
                             str(len(poke.atks)) + ').\n')
             
@@ -137,22 +137,10 @@ class Battle():
 
     def attack(self, first, second, choice = None):
         """Executa o laço da batalha."""
-
-        # determina primeiro quem começa
-        #active = self.getFirst(first, second)
-        #if active is first:
-        #    defender = second
-        #else:
-        #    defender = first
-        
-        #result = True
-
-        # laço da batalha
-        #while result is True:
     
         struggle = False
         
-        if first.hasToStruggle():
+        if first.has_to_struggle():
             struggle = True
 
         if choice == None:
@@ -180,7 +168,6 @@ class Battle():
 
         
         # efeitos da escolha
-        #else:
 
         if struggle:
             attack = Attack('Struggle', Type(0), 100, 50, 10)
@@ -188,22 +175,22 @@ class Battle():
             attack = first.atks[choice]
             attack.pp -= 1
 
-        typeMult = getMultiplier(first, attack.typ, second)
-        crit = self.getCrit(first.spd, first.level)
+        type_mult = get_multiplier(first, attack.typ, second)
+        crit = self.get_crit(first.spd, first.level)
         
-        critMsg = ''
+        crit_msg = ''
         if crit != 1.0:
-            critMsg = ' Foi um ataque crítico!!'
+            crit_msg = ' Foi um ataque crítico!!'
         
-        dmg = self.getDmg(first, second, attack, typeMult, crit)
+        dmg = self.get_dmg(first, second, attack, type_mult, crit)
 
         if struggle:
             print(first.name + ' não tem mais nenhum ataque sobrando.')
 
-        if self.willHit(attack.accu):
+        if self.will_hit(attack.accu):
             second.hp -= dmg
             print(first.name + ' usou ' + attack.name +
-                    self.effectMessage(typeMult) + critMsg)
+                    self.effect_message(type_mult) + crit_msg)
 
         else:
             print(first.name + ' usou ' + attack.name + ' e errou.')
@@ -211,17 +198,3 @@ class Battle():
         if struggle:
             first.hp -= math.floor(dmg / 2)
             print(first.name + ' tomou dano de recoil.')
-
-
-        # troca de turno
-        #if active is first:
-        #    active = second
-        #    defender = first
-        #else:
-        #    active = first
-        #    defender = second
-        #result = self.allAlive(first, second)
-
-        # fim da batalha
-        #print('\n' + active.name + ' desmaiou! ' + defender.name + 
-        #    ' ganhou a luta!\n')

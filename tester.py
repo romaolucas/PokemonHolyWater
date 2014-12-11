@@ -2,12 +2,12 @@ from type import *
 from pokemon import *
 from attack import *
 from battle import *
-import pokeServer
+import poke_server
 from lxml import etree
 from flask import request
 import unittest
 
-class TestPokemon(unittest.TestCase):
+class Test_Pokemon(unittest.TestCase):
 
     def setUp(self):
         self.poke = Pokemon('squirtle')
@@ -17,8 +17,8 @@ class TestPokemon(unittest.TestCase):
         self.first = Pokemon('ditto')
         self.second = Pokemon('magikarp')
         self.battle = Battle()
-        pokeServer.app.config['TESTING'] = True
-        self.app = pokeServer.app.test_client()
+        poke_server.app.config['TESTING'] = True
+        self.app = poke_server.app.test_client()
 
     def teste_poke_creation(self):
         self.assertEqual(self.poke.typ1.name, 'water')
@@ -28,19 +28,19 @@ class TestPokemon(unittest.TestCase):
     def test_attack(self):
         for atk in self.poke.atks:
             atk.pp = 0
-        self.assertTrue(self.poke.hasToStruggle())
-        self.assertEqual(getMultiplier(self.poke, Type(10), self.poke2), 3.0)
-        self.assertEqual(getMultiplier(self.poke4, Type(1), self.poke3), 0.75)
+        self.assertTrue(self.poke.has_to_struggle())
+        self.assertEqual(get_multiplier(self.poke, Type(10), self.poke2), 3.0)
+        self.assertEqual(get_multiplier(self.poke4, Type(1), self.poke3), 0.75)
 
     def test_battle(self):
-        self.assertEqual(self.battle.getFirst(self.first, self.second), self.second)
-        self.assertFalse(self.battle.willHit(0))
-        self.assertAlmostEqual(self.battle.getCrit(512, 7), 19/12)
-        mult = getMultiplier(self.poke, self.poke.atks[0].typ, self.poke2)
-        crit = self.battle.getCrit(self.poke.spd, self.poke.level)
-        self.assertGreaterEqual(self.battle.getDmg(self.poke, self.poke2, 
+        self.assertEqual(self.battle.get_first(self.first, self.second), self.second)
+        self.assertFalse(self.battle.will_hit(0))
+        self.assertAlmostEqual(self.battle.get_crit(512, 7), 19/12)
+        mult = get_multiplier(self.poke, self.poke.atks[0].typ, self.poke2)
+        crit = self.battle.get_crit(self.poke.spd, self.poke.level)
+        self.assertGreaterEqual(self.battle.get_dmg(self.poke, self.poke2, 
             self.poke.atks[0], mult, crit), 14.46 )
-        self.assertLessEqual(self.battle.getDmg(self.poke, self.poke2, 
+        self.assertLessEqual(self.battle.get_dmg(self.poke, self.poke2, 
             self.poke.atks[0], mult, crit), 68.0)
 
     def test_requests(self):
