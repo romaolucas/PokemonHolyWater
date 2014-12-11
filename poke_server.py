@@ -70,7 +70,7 @@ class Server():
 
         if first is self.poke_server:
             choice = self.battle.make_choice(self.poke_server, self.poke_cliente, self.ai)
-            battle.attack(self.poke_server, self.poke_cliente, choice)
+            self.battle.attack(self.poke_server, self.poke_cliente, choice)
 
             self.battle.all_alive(self.poke_server, self.poke_cliente)
 
