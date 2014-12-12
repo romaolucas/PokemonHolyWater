@@ -36,8 +36,9 @@ class Pokemon:
 
         else:
 
-            xsd = open('pokemon.xsd', 'rb').read()
-            schema_root = etree.XML(xsd)
+            xsd = open('pokemon.xsd', 'rb')
+            schema_root = etree.XML(xsd.read())
+            xsd.close()
             schema = etree.XMLSchema(schema_root)
             parser = etree.XMLParser(schema = schema)
             # arq é uma STRING com o XML
