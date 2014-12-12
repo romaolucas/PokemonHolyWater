@@ -3,6 +3,7 @@ from pokemon import *
 from attack import *
 from battle import *
 import poke_server
+import ai
 from lxml import etree
 from flask import request
 import unittest
@@ -51,6 +52,33 @@ class Test_Pokemon(unittest.TestCase):
         test = self.app.post('/battle/', data = '')
         assert 200 is not test.status_code
         self.assertRaises(RuntimeError, self.app.post, '/shutdown')
+
+    def test_ai(self):
+        ai = AI("allin")
+        self.assertEqual(ai.choose_atk(self.poke, self.poke2, 42), 3, "Ataque escolhido errado (nao eh o mais eficiente no modo 'allin')")
+        self.assertEqual(ai.choose_atk(self.poke2, self.poke, 42), 3, "Ataque escolhido errado (nao eh o mais eficiente no modo 'allin')")
+        self.assertEqual(ai.choose_atk(self.poke3, self.poke2, 42), 1, "Ataque escolhido errado (nao eh o mais eficiente no modo 'allin')")
+
+        ai.mode = "risky"
+        self.assertEqual(ai.choose_atk(self.poke, self.poke2, 80), 3, "Ataque escolhido errado (nao eh o mais eficiente no modo 'risky')")
+        self.assertEqual(ai.choose_atk(self.poke, self.poke2, 81), 0, "Ataque escolhido errado (nao eh o mais eficiente no modo 'risky')")
+        self.assertEqual(ai.choose_atk(self.poke2, self.poke, 80), 3, "Ataque escolhido errado (nao eh o mais eficiente no modo 'risky')")
+        self.assertEqual(ai.choose_atk(self.poke2, self.poke, 81), 2, "Ataque escolhido errado (nao eh o mais eficiente no modo 'risky')")
+        self.assertEqual(ai.choose_atk(self.poke3, self.poke2, 31), 1, "Ataque escolhido errado (nao eh o mais eficiente no modo 'risky'")
+        self.assertEqual(ai.choose_atk(self.poke3, self.poke2, 51), 1, "Ataque escolhido errado (nao eh o mais eficiente no modo 'risky'")
+         
+        ai.mode = "safe"
+        self.assertEqual(ai.choose_atk(self.poke, self.poke2, 42), 0, "Ataque escolhido errado (nao eh o mais eficiente no modo 'safe')")
+        self.assertEqual(ai.choose_atk(self.poke2, self.poke, 42), 2, "Ataque escolhido errado (nao eh o mais eficiente no modo 'safe')")
+        self.assertEqual(ai.choose_atk(self.poke3, self.poke2, 42), 1, "Ataque escolhido errado (nao eh o mais eficiente no modo 'safe')")
+
+#Nota: o metodo change_battle_mode muda o modo de batalha do segundo pokemon passado no parametro, ou seja, do defender
+        ai.change_battle_mode(self.poke2, self.poke)
+        self.assertEqual(ai.mode, "allin", "Modo de batalha errado")
+        ai.change_battle_mode(self.poke, self.poke2)
+        self.assertEqual(ai.mode, "safe", "Modo de batalha errado")
+        ai.change_battle_mode(self.poke2, self.poke3)
+        self.assertEqual(ai.mode, "allin", "Modo de batalha errado")
 
 if __name__ == '__main__':
     unittest.main()
