@@ -42,11 +42,16 @@ class AI():
             dmg = 0
             if atk.pp > 0 and atk.accu >= min_accu:
                 dmg = self.get_expected_dmg(atker, atk, defender)
-                print("dano do atk " + atk.name + " eh " + str(dmg))
-            atk_scores.append(dmg)
+                atk_scores.append(dmg)
+                
+        if atk_scores == [] and self.mode == "safe":
+            self.mode = "risky"
+            return self.choose_atk(atker, defender, accu)
+        if atk_scores == [] and self.mode == "risky":
+            self.mode = "allin"
+            return self.choose_atk(atker, defender, accu)
             
         choice = atk_scores.index(max(atk_scores))
-        print("atk escolhido no modo: " + self.mode)
         return choice
        
     def calculate_battle_chance(self, atker, defender):
@@ -73,12 +78,6 @@ class AI():
         maxpwr = self.maxweight * max(atks_pwr)
         meanpwr = self.meanweight * sum(atks_pwr) / float(len(atks_pwr))
         
-        print("Status do " + atker.name)
-        print("level ratio: " + str(100*leveldif))
-        print("maxpwr: " + str(100*maxpwr))
-        print("hpratio: " + str(100*hpratio))
-        print("meanpwr: " + str(100*meanpwr))
-        print("speedratio: " + str(100*speedratio))
         chance_sum = 100 * (hpratio + leveldif + speedratio + maxpwr + meanpwr)
         
         return chance_sum
@@ -90,4 +89,3 @@ class AI():
         else : mode = "allin"
         
         self.mode = mode
-        print("\nScore: " + str(chance_score) + " - " + mode + " ativado!\n")
